@@ -1,26 +1,187 @@
 @import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+/* Class-based dark mode: toggled by adding `.dark` on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #f1f3f5;
+  --foreground: #1a1d21;
+  --muted: #6b7280;
+  --border: #e3e6ea;
+  --border-strong: #cfd4da;
+  --accent: #4f46e5;
+  --accent-fg: #ffffff;
+  --accent-soft: #eef2ff;
+  --danger: #e11d48;
+  --canvas: #f4f5f7;
+  --canvas-dot: #d4d8de;
+  --ring: #4f46e5;
+}
+
+.dark {
+  --background: #0c0d10;
+  --surface: #16181d;
+  --surface-2: #1d2026;
+  --foreground: #e6e8eb;
+  --muted: #8b929c;
+  --border: #272b32;
+  --border-strong: #363b44;
+  --accent: #6366f1;
+  --accent-fg: #ffffff;
+  --accent-soft: #1e1b3a;
+  --danger: #fb7185;
+  --canvas: #0f1115;
+  --canvas-dot: #2a2e36;
+  --ring: #6366f1;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overscroll-behavior: none;
+}
+
+/* Thin, theme-aware scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+  background-clip: content-box;
+}
+
+/* ---- React Flow theme integration ---- */
+.react-flow {
+  --xy-edge-stroke-default: var(--border-strong);
+  --xy-edge-stroke-selected-default: var(--accent);
+  --xy-attribution-background-color-default: transparent;
+}
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__background {
+  background: var(--canvas);
+}
+.react-flow__handle {
+  width: 9px;
+  height: 9px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.react-flow__node:hover .react-flow__handle,
+.react-flow__handle.connectionindicator,
+.react-flow__node.selected .react-flow__handle {
+  opacity: 1;
+}
+.react-flow__handle:hover {
+  background: var(--accent);
+}
+.react-flow__node.selected .vraw-shape-body {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.react-flow__resize-control.handle {
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.react-flow__resize-control.line {
+  border-color: var(--accent);
+}
+.react-flow__controls-button {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  fill: var(--foreground);
+}
+.react-flow__controls-button:hover {
+  background: var(--surface-2);
+}
+.react-flow__minimap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.react-flow__edge-path,
+.react-flow__connection-path {
+  stroke-linecap: round;
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--accent);
+}
+.react-flow__edge-textbg {
+  fill: var(--surface);
+}
+.react-flow__edge-text {
+  fill: var(--foreground);
+  font-size: 11px;
+}
+
+/* Inline node text editing */
+.vraw-node-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: inherit;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+  resize: none;
+}
+
+/* Utility for the dashed marquee selection */
+.react-flow__selection {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid var(--accent);
+}
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
