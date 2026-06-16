@@ -5,6 +5,7 @@ import { NodeResizer, type NodeProps } from "@xyflow/react";
 import type { DiagramNode, UmlMember, UmlVisibility } from "@/types/diagram";
 import { useEditorStore } from "@/stores/editor-store";
 import { useInlineEdit } from "@/hooks/use-inline-edit";
+import { measureTextWidth, useAutoWidth } from "@/hooks/use-auto-size";
 import { ConnectHandles } from "./handles";
 import { ConnectArrows } from "./ConnectArrows";
 
@@ -31,6 +32,21 @@ function UmlClassNodeImpl({ id, data, selected, width, height }: NodeProps<Diagr
   const attrs = data.attributes ?? [];
   const methods = data.methods ?? [];
   const isEnum = data.shape === "uml-enum";
+
+  // Widen so the title and longest member row stay legible.
+  let contentW = measureTextWidth(data.label, {
+    fontSize: s.fontSize,
+    fontWeight: 600,
+    italic: s.italic,
+  }) + 20;
+  for (const m of [...attrs, ...methods]) {
+    const rowW = measureTextWidth(`${VIS_SYMBOL[m.visibility]} ${m.name}`, {
+      fontSize: 12,
+      fontWeight: 400,
+    });
+    contentW = Math.max(contentW, rowW + 18);
+  }
+  useAutoWidth(id, width, contentW, 120, 520);
 
   return (
     <div
@@ -64,10 +80,22 @@ function UmlClassNodeImpl({ id, data, selected, width, height }: NodeProps<Diagr
             onChange={(e) => setDraft(e.target.value)}
             onBlur={commit}
             onKeyDown={onKeyDown}
-            style={{ fontSize: s.fontSize, fontWeight: 700 }}
+            style={{
+              fontSize: s.fontSize,
+              fontWeight: 700,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: s.underline ? "underline" : "none",
+            }}
           />
         ) : (
-          <div className="font-semibold" style={{ fontSize: s.fontSize }}>
+          <div
+            className="font-semibold"
+            style={{
+              fontSize: s.fontSize,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: s.underline ? "underline" : "none",
+            }}
+          >
             {data.label}
           </div>
         )}

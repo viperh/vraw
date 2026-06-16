@@ -7,6 +7,7 @@ import { renderGeometry } from "@/lib/shape-geometry";
 import { dashArray } from "@/lib/utils";
 import { useEditorStore } from "@/stores/editor-store";
 import { useInlineEdit } from "@/hooks/use-inline-edit";
+import { useAutoSize } from "@/hooks/use-auto-size";
 import { ConnectHandles } from "./handles";
 import { ConnectArrows } from "./ConnectArrows";
 
@@ -20,6 +21,21 @@ function ShapeNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramN
 
   const isText = data.shape === "text";
   const rotation = data.rotation ?? 0;
+  // Key attributes are underlined by ER convention, regardless of text style.
+  const underline = s.underline || data.shape === "er-key-attribute";
+
+  useAutoSize({
+    id,
+    text: data.label,
+    style: s,
+    width,
+    height,
+    minWidth: 28,
+    minHeight: 24,
+    padX: 20,
+    padY: 12,
+    lineHeight: 1.25,
+  });
 
   return (
     <div
@@ -82,6 +98,8 @@ function ShapeNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramN
               fontSize: s.fontSize,
               color: s.fontColor,
               fontWeight: s.fontWeight,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: underline ? "underline" : "none",
               textAlign: s.textAlign,
             }}
           />
@@ -92,6 +110,8 @@ function ShapeNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramN
               fontSize: s.fontSize,
               color: s.fontColor,
               fontWeight: s.fontWeight,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: underline ? "underline" : "none",
               textAlign: s.textAlign,
               width: "100%",
             }}

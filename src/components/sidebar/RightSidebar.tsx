@@ -12,6 +12,9 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  Bold,
+  Italic,
+  Underline,
   BringToFront,
   SendToBack,
   Lock,
@@ -83,6 +86,33 @@ function ArrangePanel() {
   );
 }
 
+function FormatToggle({
+  active,
+  title,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  title: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-pressed={active}
+      onClick={onClick}
+      className={
+        "flex h-7 w-8 items-center justify-center border-r border-border last:border-r-0 transition-colors " +
+        (active ? "bg-accent-soft text-accent" : "text-muted hover:bg-surface-2")
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
 function StylePanel({ ids, style }: { ids: string[]; style: NodeStyle }) {
   const update = useEditorStore((st) => st.updateNodeStyle);
   const set = (patch: Partial<NodeStyle>) => update(ids, patch);
@@ -133,6 +163,31 @@ function StylePanel({ ids, style }: { ids: string[]; style: NodeStyle }) {
       </Section>
 
       <Section title="Text">
+        <Row label="Format">
+          <div className="flex overflow-hidden rounded-md border border-border">
+            <FormatToggle
+              active={style.fontWeight >= 600}
+              title="Bold"
+              onClick={() => set({ fontWeight: style.fontWeight >= 600 ? 400 : 700 })}
+            >
+              <Bold size={14} />
+            </FormatToggle>
+            <FormatToggle
+              active={style.italic}
+              title="Italic"
+              onClick={() => set({ italic: !style.italic })}
+            >
+              <Italic size={14} />
+            </FormatToggle>
+            <FormatToggle
+              active={style.underline}
+              title="Underline"
+              onClick={() => set({ underline: !style.underline })}
+            >
+              <Underline size={14} />
+            </FormatToggle>
+          </div>
+        </Row>
         <Row label="Font size">
           <NumberField value={style.fontSize} min={6} max={72} onChange={(v) => set({ fontSize: v })} suffix="px" />
         </Row>

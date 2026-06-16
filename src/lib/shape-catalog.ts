@@ -16,6 +16,8 @@ export const DEFAULT_NODE_STYLE: NodeStyle = {
   fontSize: 14,
   fontColor: "#ffffff",
   fontWeight: 500,
+  italic: false,
+  underline: false,
   textAlign: "center",
   borderRadius: 10,
   shadow: false,

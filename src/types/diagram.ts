@@ -116,6 +116,8 @@ export interface NodeStyle {
   fontSize: number;
   fontColor: string;
   fontWeight: number;
+  italic: boolean;
+  underline: boolean;
   textAlign: TextAlign;
   borderRadius: number;
   shadow: boolean;

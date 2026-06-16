@@ -5,6 +5,7 @@ import { NodeResizer, type NodeProps } from "@xyflow/react";
 import type { DiagramNode } from "@/types/diagram";
 import { useEditorStore } from "@/stores/editor-store";
 import { useInlineEdit } from "@/hooks/use-inline-edit";
+import { useAutoSize } from "@/hooks/use-auto-size";
 import { ConnectHandles } from "./handles";
 import { ConnectArrows } from "./ConnectArrows";
 
@@ -15,6 +16,20 @@ function TextNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramNo
   const updateNodeData = useEditorStore((st) => st.updateNodeData);
   const { editing, draft, setDraft, start, commit, onKeyDown, ref } =
     useInlineEdit(data.label, (label) => updateNodeData(id, { label }));
+
+  useAutoSize({
+    id,
+    text: data.label,
+    style: s,
+    width,
+    height,
+    minWidth: isNote ? 80 : 40,
+    minHeight: isNote ? 60 : 24,
+    padX: 16,
+    padY: 16,
+    maxWidth: isNote ? 360 : 480,
+    lineHeight: 1.375,
+  });
 
   return (
     <div
@@ -54,6 +69,8 @@ function TextNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramNo
               fontSize: s.fontSize,
               color: s.fontColor,
               fontWeight: s.fontWeight,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: s.underline ? "underline" : "none",
               textAlign: s.textAlign,
               height: "100%",
             }}
@@ -65,6 +82,8 @@ function TextNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramNo
               fontSize: s.fontSize,
               color: s.fontColor,
               fontWeight: s.fontWeight,
+              fontStyle: s.italic ? "italic" : "normal",
+              textDecoration: s.underline ? "underline" : "none",
               textAlign: s.textAlign,
               width: "100%",
             }}

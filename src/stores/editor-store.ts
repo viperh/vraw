@@ -70,6 +70,8 @@ interface EditorState {
 
   updateNodeData: (id: string, patch: Partial<NodeData>) => void;
   updateNodeStyle: (ids: string[], patch: Partial<NodeStyle>) => void;
+  /** Auto-grow a node to fit its content. Bypasses undo history. */
+  growNode: (id: string, width: number, height: number) => void;
   updateEdgeData: (ids: string[], patch: Partial<EdgeData>) => void;
 
   deleteSelected: () => void;
@@ -251,6 +253,26 @@ export const useEditorStore = create<EditorState>((set, get) => ({
           : n,
       ),
     }));
+  },
+
+  growNode: (id, width, height) => {
+    set((s) => {
+      const node = s.nodes.find((n) => n.id === id);
+      if (!node) return s;
+      const curW = node.width ?? 0;
+      const curH = node.height ?? 0;
+      // Only ever grow, and only on a meaningful (>0.5px) change, so the
+      // measure → set → re-measure cycle settles immediately instead of looping.
+      if (width <= curW + 0.5 && height <= curH + 0.5) return s;
+      return {
+        nodes: s.nodes.map((n) =>
+          n.id === id
+            ? { ...n, width: Math.max(curW, width), height: Math.max(curH, height) }
+            : n,
+        ),
+        dirty: true,
+      };
+    });
   },
 
   updateEdgeData: (ids, patch) => {
