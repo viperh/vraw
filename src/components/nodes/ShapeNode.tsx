@@ -53,7 +53,12 @@ function ShapeNodeImpl({ id, data, selected, width, height }: NodeProps<DiagramN
         isVisible={selected && !data.locked}
         minWidth={28}
         minHeight={24}
-        keepAspectRatio={data.shape === "circle"}
+        keepAspectRatio={
+          data.shape === "circle" ||
+          data.shape === "er-disjoint" ||
+          data.shape === "er-overlapping" ||
+          data.shape === "er-union"
+        }
       />
       {!isText && (
         <svg

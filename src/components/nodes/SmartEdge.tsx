@@ -55,6 +55,11 @@ function SmartEdgeImpl(props: EdgeProps<DiagramEdge>) {
     [path, labelX, labelY] = getBezierPath(args);
   }
 
+  // EER total participation: two parallel lines, faked by drawing a wide
+  // stroke and overpainting its centre with the canvas colour so a thin gap
+  // splits it into two. Partial participation is the normal single line.
+  const stroke = selected ? "var(--accent)" : d.stroke;
+
   return (
     <>
       <BaseEdge
@@ -63,11 +68,20 @@ function SmartEdgeImpl(props: EdgeProps<DiagramEdge>) {
         markerEnd={markerEnd}
         markerStart={markerStart}
         style={{
-          stroke: selected ? "var(--accent)" : d.stroke,
-          strokeWidth: d.strokeWidth,
+          stroke,
+          strokeWidth: d.doubleLine ? d.strokeWidth * 3 : d.strokeWidth,
           strokeDasharray: dashArray(d.strokeStyle, d.strokeWidth),
         }}
       />
+      {d.doubleLine && (
+        <path
+          d={path}
+          fill="none"
+          stroke="var(--canvas)"
+          strokeWidth={d.strokeWidth}
+          style={{ pointerEvents: "none" }}
+        />
+      )}
       {d.label ? (
         <EdgeLabelRenderer>
           <div

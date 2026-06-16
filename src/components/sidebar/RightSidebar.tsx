@@ -437,6 +437,20 @@ function EdgePanel({ ids, data }: { ids: string[]; data: EdgeData }) {
 
       <div className="mt-1 border-t border-border pt-2">
         <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
+          ER participation
+        </p>
+        <SegmentedButtons
+          value={data.doubleLine ? "total" : "partial"}
+          onChange={(v) => set({ doubleLine: v === "total" })}
+          options={[
+            { value: "partial", label: "Partial (single line)", icon: <span className="text-[11px]">—</span> },
+            { value: "total", label: "Total (double line)", icon: <span className="text-[11px]">=</span> },
+          ]}
+        />
+      </div>
+
+      <div className="mt-1 border-t border-border pt-2">
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
           ER cardinality
         </p>
         <p className="mb-1 text-[10px] text-muted">Chen (1 : N)</p>

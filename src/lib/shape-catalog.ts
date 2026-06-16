@@ -144,6 +144,11 @@ export const SHAPE_CATEGORIES: PaletteCategory[] = [
       { kind: "er-key-attribute", label: "Key Attribute", size: [120, 60] },
       { kind: "er-multivalued-attribute", label: "Multivalued", size: [130, 64] },
       { kind: "er-derived-attribute", label: "Derived", size: [120, 60] },
+      { kind: "er-isa", label: "Generalization (ISA)", size: [96, 64] },
+      { kind: "er-half-circle", label: "Subset arc (⊂)", size: [44, 54] },
+      { kind: "er-disjoint", label: "Disjoint (d)", size: [46, 46] },
+      { kind: "er-overlapping", label: "Overlapping (o)", size: [46, 46] },
+      { kind: "er-union", label: "Union / Category (∪)", size: [46, 46] },
     ],
   },
   {
@@ -225,6 +230,10 @@ function defaultLabel(kind: ShapeKind): string {
     "uml-interface": "InterfaceName",
     "uml-enum": "EnumName",
     "er-entity": "Entity",
+    "er-isa": "ISA",
+    "er-disjoint": "d",
+    "er-overlapping": "o",
+    "er-union": "∪",
     process: "Process",
     decision: "Decision?",
     terminator: "Start",
@@ -269,6 +278,12 @@ export function makeNodeData(
   if (kind === "er-derived-attribute") {
     style.strokeStyle = "dashed";
   }
+  // Specialization constraint circles carry a single italic letter (d / o / ∪).
+  if (kind === "er-disjoint" || kind === "er-overlapping" || kind === "er-union") {
+    style.italic = kind !== "er-union";
+    style.fontWeight = 700;
+    style.fontSize = 18;
+  }
 
   const data: NodeData = {
     shape: kind,
@@ -293,6 +308,10 @@ export function makeNodeData(
   }
   if (kind === "er-entity") {
     data.columns = data.columns ?? defaultColumns();
+  }
+  // The generalization arc reads as a clean symbol; no caption by default.
+  if (kind === "er-half-circle" && overrides.label === undefined) {
+    data.label = "";
   }
   return data;
 }

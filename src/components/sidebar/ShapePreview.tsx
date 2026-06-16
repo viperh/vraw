@@ -34,6 +34,49 @@ export function ShapePreview({ kind, size = 30 }: { kind: ShapeKind; size?: numb
       </svg>
     );
   }
+  if (kind === "er-disjoint" || kind === "er-overlapping" || kind === "er-union") {
+    const ch = kind === "er-disjoint" ? "d" : kind === "er-overlapping" ? "o" : "∪";
+    return (
+      <svg width={size} height={size} viewBox="0 0 30 30">
+        <circle cx={15} cy={15} r={11} fill="none" stroke="currentColor" strokeWidth={1.5} />
+        <text
+          x={15}
+          y={15}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={13}
+          fontStyle={kind === "er-union" ? "normal" : "italic"}
+          fontWeight={700}
+          fill="currentColor"
+        >
+          {ch}
+        </text>
+      </svg>
+    );
+  }
+  if (kind === "er-isa") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 30 30">
+        <polygon points="4,8 26,8 15,25" fill="none" stroke="currentColor" strokeWidth={1.5} />
+        <text x={15} y={13} textAnchor="middle" dominantBaseline="central" fontSize={6.5} fill="currentColor">
+          ISA
+        </text>
+      </svg>
+    );
+  }
+  if (kind === "er-half-circle") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 30 30">
+        <path
+          d="M23,5 A11,10 0 1 0 23,25"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
   return (
     <svg width={size} height={size} viewBox="0 0 30 22" className="overflow-visible">
       <g className="text-foreground">

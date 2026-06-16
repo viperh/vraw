@@ -29,7 +29,10 @@ function ShapeCell({ item }: { item: PaletteItem }) {
 }
 
 function ShapesTab({ query }: { query: string }) {
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  // Every category starts collapsed; a search still reveals matches (see `!q`).
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(SHAPE_CATEGORIES.map((c) => [c.id, true])),
+  );
   const q = query.trim().toLowerCase();
 
   const categories = useMemo(() => {

@@ -71,6 +71,12 @@ export type ShapeKind =
   | "er-key-attribute"
   | "er-multivalued-attribute"
   | "er-derived-attribute"
+  // EER specialization / generalization
+  | "er-isa"
+  | "er-half-circle"
+  | "er-disjoint"
+  | "er-overlapping"
+  | "er-union"
   // BPMN
   | "bpmn-task"
   | "bpmn-start-event"
@@ -175,6 +181,8 @@ export interface EdgeData extends Record<string, unknown> {
   startArrow: ArrowKind;
   endArrow: ArrowKind;
   animated?: boolean;
+  /** Draw as a parallel double line — EER total participation. */
+  doubleLine?: boolean;
 }
 
 export type DiagramEdge = Edge<EdgeData>;

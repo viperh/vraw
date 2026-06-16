@@ -72,7 +72,10 @@ export function renderGeometry(
       );
 
     case "circle":
-    case "connector": {
+    case "connector":
+    case "er-disjoint":
+    case "er-overlapping":
+    case "er-union": {
       const r = m / 2;
       return <ellipse cx={cx} cy={cy} rx={r} ry={r} {...common} />;
     }
@@ -96,7 +99,21 @@ export function renderGeometry(
     case "right-triangle":
       return <polygon points={poly([[0, 0], [0, h], [w, h]])} {...common} />;
     case "merge":
+    case "er-isa":
       return <polygon points={poly([[0, 0], [w, 0], [cx, h]])} {...common} />;
+    case "er-half-circle":
+      // Open "C" / subset symbol (⊂) — bows left, open on the right.
+      return (
+        <path
+          d={`M${w},${h * 0.16} A${cx},${cy} 0 1 0 ${w},${h * 0.84}`}
+          fill="none"
+          stroke={stroke}
+          strokeWidth={sw}
+          strokeDasharray={dash}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      );
 
     case "diamond":
     case "rhombus":
